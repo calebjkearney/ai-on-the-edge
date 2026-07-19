@@ -1,0 +1,13 @@
+while True:
+    numGrades=int(input('How many grades? ' ))
+    myGrades=[]
+    for i in range(numGrades):
+        grade=int(input('Enter Grade '+str(i+1)+' :'))
+        myGrades.append(grade)
+        print(grade)
+    for i in range(numGrades):
+        avgGrade=sum(myGrades)/numGrades
+    print('Your average grade is ',avgGrade)
+    print('Your grades are: ')
+    for i in range(numGrades):
+        print(myGrades[i])
