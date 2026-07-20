@@ -1,0 +1,25 @@
+from fusion_hat.adc import ADC
+from time import sleep
+from fusion_hat.pwm import PWM
+from time import sleep
+
+redPin = 5
+redLED=PWM(redPin)
+redLED.freq(200)
+
+bluePin=7
+blueLED=PWM(bluePin)
+blueLED.freq(200)
+
+redLED.pulse_width_percent(0)
+blueLED.pulse_width_percent(0)
+
+potPin=0
+myPot=ADC(potPin)
+
+while True:
+    analogIn=myPot.read()
+    bright=(100/4095)*analogIn
+    blueLED.pulse_width_percent(bright)
+    redLED.pulse_width_percent(bright)
+    sleep(0.10)
