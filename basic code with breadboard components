@@ -1,0 +1,72 @@
+#red light blinking
+
+from fusion_hat.pin import Pin, Mode
+import time
+LEDPin = 17
+redLED = Pin(LEDPin,mode=Mode.OUT)
+while True:
+    redLED.high()
+    time.sleep(1)
+    redLED.low()
+    time.sleep(1)
+
+
+#pulse width modulation (magenta blink)
+
+from fusion_hat.pwm import PWM
+from time import sleep
+
+redPin = 5
+redLED=PWM(redPin)
+redLED.freq(200)
+
+greenPin=6
+greenLED=PWM(greenPin)
+greenLED.freq(200)
+
+bluePin=7
+blueLED=PWM(bluePin)
+blueLED.freq(200)
+
+redLED.pulse_width_percent(0)
+blueLED.pulse_width_percent(0)
+greenLED.pulse_width_percent(0)
+
+while True:
+    for bright in range(0,101,1):
+        blueLED.pulse_width_percent(bright)
+        redLED.pulse_width_percent(bright)
+        print(bright)
+        sleep(0.01)
+    for bright in range(99,0,-1):
+        blueLED.pulse_width_percent(bright)
+        redLED.pulse_width_percent(bright)
+        print(bright)
+        sleep(0.01)
+
+
+#potentiometer
+
+from fusion_hat.adc import ADC
+from time import sleep
+
+potPin=0
+myPot=ADC(potPin)
+
+while True:
+    analogIn=myPot.read()
+    voltage=(3.3/4095)*analogIn
+    print("Analog In: ",analogIn," Voltage: ",round(voltage,2), " Volts")
+    sleep(0.10)
+
+#servos
+from fusion_hat.servo import Servo
+from time import sleep
+panPin=2
+tiltPin=3
+servoPan=Servo(panPin)
+servoTilt=Servo(tiltPin)
+servoPan.angle(45)
+servoTilt.angle(-45)
+
+
