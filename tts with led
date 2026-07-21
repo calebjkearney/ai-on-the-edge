@@ -1,0 +1,42 @@
+from fusion_hat.tts import Piper
+tts = Piper()
+tts.set_model('en_US-bryce-medium')
+#voiceDict = tts.available_models('en_US')
+from fusion_hat.adc import ADC
+from time import sleep
+from fusion_hat.pwm import PWM
+from time import sleep
+
+
+redPin = 5
+redLED=PWM(redPin)
+redLED.freq(200)
+
+bluePin=7
+blueLED=PWM(bluePin)
+blueLED.freq(200)
+
+redLED.pulse_width_percent(0)
+blueLED.pulse_width_percent(0)
+
+potPin=0
+myPot=ADC(potPin)
+
+while True:
+    analogIn=myPot.read()
+    bright=100**(analogIn/4095)-0.01
+    blueLED.pulse_width_percent(int(bright))
+    redLED.pulse_width_percent(int(bright))
+    print(analogIn, int(bright))
+    if int(bright)>=97:
+        tts.say('The light is full brightness     ',stream=False)
+        sleep(1)
+    if int(bright)==0:
+        tts.say('The light is off   ',stream=False)
+        sleep(1)
+    if int(bright)>0 and int(bright)<97:
+        tts.say('The light is brightness    '+str(int(bright))+'.',stream=False)
+        sleep(1)
+    sleep(0.10)
+
+
