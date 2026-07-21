@@ -1,0 +1,25 @@
+from fusion_hat.stt import STT
+from fusion_hat.adc import ADC
+from time import sleep
+from fusion_hat.pwm import PWM
+redPin = 5
+redLED=PWM(redPin)
+redLED.freq(200)
+
+
+stt = STT(language="en-us")
+
+redLED.pulse_width_percent(0)
+
+while True:
+    print("Say something: ")
+    command = stt.listen(stream=False)
+    print(command)
+    if command=="on":
+        redLED.pulse_width_percent(100)
+        sleep(1)
+    if command=="off":
+        redLED.pulse_width_percent(0)
+        sleep(1)
+    sleep(0.1)
+    
