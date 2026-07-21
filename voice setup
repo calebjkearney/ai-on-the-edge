@@ -1,0 +1,14 @@
+from fusion_hat.tts import Piper
+tts = Piper()
+voiceDict = tts.available_models('en_US')
+#print(voiceDict)
+allVoices = []
+for voice in voiceDict.values():
+    for var in voice:
+        allVoices.append(var)
+print(allVoices)
+for voice in allVoices:
+    speakableName = voice.replace("en_US-",'').replace('-',' ').replace('_',' ')
+    print(speakableName)
+    tts.set_model(voice)
+    tts.say('This is the voice of '+speakableName+'.')
