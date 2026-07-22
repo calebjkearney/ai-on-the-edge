@@ -23,3 +23,27 @@ while True:
         sleep(1)
     sleep(0.1)
     
+----------------------------------------------------------
+
+from fusion_hat.stt import STT
+from fusion_hat.pin import Pin, Mode
+from time import sleep
+
+redPin = 17
+redLED = Pin(redPin,mode=Mode.OUT)
+stt = STT(language="en-us")
+redLED.low()
+while True:
+    print("Voice assistant at the ready. Speak at any time")
+    command = stt.listen(stream=False)
+    command = command.strip()
+    print(command)
+    if command == "on":
+        redLED.high()
+        print("LED ON")
+    if command == "off":
+        redLED.low()
+        print("LED off")
+    if command == "quit":
+        break
+redLED.low()
