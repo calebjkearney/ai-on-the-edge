@@ -1,0 +1,43 @@
+from fusion_hat.pin import Pin, Mode
+import threading
+from time import sleep
+from queue import Queue
+
+redPin = 17
+redLED = Pin(redPin, Mode.OUT)
+redLED.low()
+
+blinkDelay = 1.0
+running = True
+blinkQ = Queue()
+def blinkTime():
+    print("Input thread is running, ")
+    global running
+    while running:
+        cmd = input("Input blink time in seconds, or Q for quit: ")
+        if cmd.upper()=="Q":
+            running=False
+            break
+        blinkQ.put(float(cmd))
+    print("The thread is terminated")
+blinkThread = threading.Thread(target=blinkTime,daemon=True)
+blinkThread.start()
+print("Main program has commenced")
+try:
+    while running:
+        if blinkQ.empty()==False:
+            blinkDelay = blinkQ.get()
+        redLED.high()
+        sleep(blinkDelay)
+        redLED.low()
+        sleep(blinkDelay)
+    redLED.low()
+    print("Program terminated")
+        
+except KeyboardInterrupt:
+    running = False
+    redLED.low()
+    print("")
+    print("LED released")
+    print("Program terminated")
+    
