@@ -1,0 +1,75 @@
+import threading
+from time import sleep
+from queue import Queue
+from fusion_hat.adc import ADC
+from fusion_hat.pwm import PWM
+from fusion_hat.stt import STT
+
+stt = STT(language="en-us")
+
+redPin = 5
+redLED=PWM(redPin)
+redLED.pulse_width_percent(0)
+redLED.freq(200)
+
+value=0
+brightness=0
+running = True
+brightQ=Queue()
+def brightDef():
+    print("Input thread is running! You better go catch it")
+    global running
+    while running:
+        print("Say brightness as a multiple of ten, or say 'quit' to quit: ")
+        command = stt.listen(stream=False)
+        print(str(command))
+        if command=="quit":
+            running=False
+            redLED.pulse_width_percent(0)
+            break
+        brightQ.put(str(command))
+    print("The thread is terminated :(")
+timeThread=threading.Thread(target=brightDef, daemon=True)
+timeThread.start()
+print("Main program has commenced")
+try:
+    while running:
+        if brightQ.empty()==False:
+            brightness=brightQ.get()
+        if brightness=="zero":
+            value=0
+        if brightness=="ten":
+            value=10
+        if brightness=="twenty":
+            value=20
+        if brightness=="thirty":
+            value=30
+        if brightness=="forty":
+            value=40  
+        if brightness=="fifty":
+            value=50
+        if brightness=="sixty":
+            value=60
+        if brightness=="seventy":
+            value=70
+        if brightness=="eighty":
+            value=80
+        if brightness=="ninety":
+            value=90
+        if brightness=="one hundred":
+            value=100
+        redLED.pulse_width_percent(value)
+    print("Program terminated")
+
+except KeyboardInterrupt:
+    running = False
+    redLED.low()
+    print("")
+    print("LED released")
+    print("Program terminated")
+    
+
+
+    
+
+           
