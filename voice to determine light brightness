@@ -1,3 +1,5 @@
+#my code
+
 import threading
 from time import sleep
 from queue import Queue
@@ -69,6 +71,69 @@ except KeyboardInterrupt:
     print("Program terminated")
     
 
+-----------------------------------------
+#Paul's Code
+from fusion_hat.pwm import PWM
+from fusion_hat.stt import STT
+import threading
+from queue import Queue
+from time import sleep
+
+redPin = 5
+redLED = PWM(redPin)
+redLED.freq(1000)
+
+stt = STT(language ="en-us")
+
+brightness = "off"
+bNumb = 0
+running = True
+brightQ = Queue()
+def blinkBright():
+    print("Input thread is running")
+    global running
+    while running:
+        print("What brightness: (off, low, medium, high, on, or quit): ")
+        cmd = stt.listen(stream=False)
+        print(str(cmd))
+        cmd = cmd.strip()
+        if cmd=="quit":
+            running=False
+            break
+        brightQ.put(cmd)
+    print("Thread is terminated")
+brightThread = threading.Thread(target = blinkBright, daemon=True)
+brightThread.start()
+print("Main program has started")
+try:
+    while running==True:
+        if brightQ.empty() == False:
+            brightness = brightQ.get()
+            if brightness=="quit":
+                break
+        if brightness=="off":
+            bNumb=0
+        if brightness=="low":
+            bNumb=8
+        if brightness=="medium":
+            bNumb=25
+        if brightness=="high" or brightness=="hi":
+            bNumb=60
+        if brightness=="on":
+            bNumb=100
+        redLED.pulse_width_percent(bNumb)
+    redLED.pulse_width_percent(0)
+    redLED.enable(False)
+    print("LED released")
+    print("Program is terminated")
+                        
+    
+except KeyboardInterrupt:
+    running = False
+    redLED.pulse_width_percent(0)
+    redLED.enable(False)
+    print("LED released")
+    print("Program terminated")
 
     
 
